@@ -1,18 +1,19 @@
-{% extends 'bootstrap/base.html' %}
+{% extends 'base.html' %}
 {% block content %}
-<div class="container mt-5">
-  <h2>Predict House Price</h2>
+  <h2>House Price Prediction</h2>
   <form method="POST">
     {{ form.hidden_tag() }}
-    {{ form.size.label }} {{ form.size(class="form-control") }}
-    {{ form.rooms.label }} {{ form.rooms(class="form-control") }}
-    {{ form.submit(class="btn btn-primary mt-3") }}
+    {{ form.size.label }} {{ form.size(size=10) }} m² <br><br>
+    {{ form.rooms.label }} {{ form.rooms(size=10) }} стаи <br><br>
+    {{ form.submit(class="btn btn-primary") }}
   </form>
 
   {% if prediction %}
-    <div class="alert alert-info mt-4">
-      <strong>Predicted Price:</strong> ${{ prediction | round(2) }}
-    </div>
+    <h3>Предсказана цена: €{{ prediction | round(2) }}</h3>
   {% endif %}
-</div>
+
+  {% if graph_url %}
+    <h4>Графика на регресията:</h4>
+    <img src="data:image/png;base64,{{ graph_url }}" alt="Regression Plot" class="img-fluid">
+  {% endif %}
 {% endblock %}
