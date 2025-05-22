@@ -1,25 +1,8 @@
-from flask import render_template, request
-from . import ai_bp
-from .forms import PredictForm
-from .model import SimpleLinearRegression
-import numpy as np
-
-# Примерни тренировъчни данни
-X_train = np.array([
-    [1400, 3],
-    [1600, 3],
-    [1700, 4],
-    [1875, 4],
-    [1100, 2],
-    [1550, 3]
-])
-y_train = np.array([245000, 312000, 279000, 308000, 199000, 219000])
-
-# Обучаваме модела веднъж при стартиране
-model = SimpleLinearRegression()
-model.fit(X_train, y_train)
+from flask_login import login_required
+# ... останалото ...
 
 @ai_bp.route('/predict', methods=['GET', 'POST'])
+@login_required
 def predict():
     form = PredictForm()
     prediction = None

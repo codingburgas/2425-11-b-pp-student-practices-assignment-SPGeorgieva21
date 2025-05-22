@@ -2,7 +2,7 @@ from flask import render_template, redirect, url_for, flash, request
 from app.auth.forms import RegistrationForm, LoginForm
 from app.models import User
 from app import db
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import check_password_hash
 from flask_login import login_user, logout_user, login_required
 from app.auth import auth_bp
 
@@ -10,11 +10,10 @@ from app.auth import auth_bp
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        hashed_pw = generate_password_hash(form.password.data)
         user = User(username=form.username.data,
                     email=form.email.data,
-                    password=hashed_pw,
                     role=form.role.data)
+        user.set_password(form.password.data)  # използваме метода от модела
         db.session.add(user)
         db.session.commit()
         flash('Registration successful. Please log in.', 'success')
@@ -26,7 +25,7 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
-        if user and check_password_hash(user.password, form.password.data):
+        if user and user.check_password(form.password.data):  # използваме метода от модела
             login_user(user)
             flash('Login successful!', 'success')
             return redirect(url_for('main.index'))
