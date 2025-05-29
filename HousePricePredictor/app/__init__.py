@@ -17,9 +17,14 @@ def create_app():
     migrate.init_app(app, db)
 
     from app.auth.routes import auth_bp
-    app.register_blueprint(auth_bp, url_prefix='/auth')
-
     from app.main.routes import main_bp
+    from app.ai.routes import ai_bp
+
+    app.register_blueprint(auth_bp)
     app.register_blueprint(main_bp)
+    app.register_blueprint(ai_bp)
+
+    # Опционално, ако искаш login_manager да знае къде да праща НЕлогнатите
+    login_manager.login_view = 'auth.login'
 
     return app

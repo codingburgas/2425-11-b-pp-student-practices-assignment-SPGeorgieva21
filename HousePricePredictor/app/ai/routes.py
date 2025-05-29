@@ -1,14 +1,18 @@
 import io
 import base64
 import matplotlib.pyplot as plt
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, redirect, url_for, request
+from flask_login import current_user
 from app.ai.forms import PredictForm
 from app.ai.model import SimpleLinearRegression
 
-ai_bp = Blueprint('ai', __name__, template_folder='templates')
+ai_bp = Blueprint('ai', __name__, url_prefix='/ai', template_folder='templates')
 
 @ai_bp.route('/predict', methods=['GET', 'POST'])
 def predict():
+    if not current_user.is_authenticated:
+        return render_template('ai/login_required.html')
+
     form = PredictForm()
     prediction = None
     graph_url = None
@@ -27,7 +31,6 @@ def predict():
 
         prediction = model.predict(x_data)[0]
 
-        # 🎨 Генерирай графиката
         plt.figure(figsize=(6, 4))
         plt.scatter(X, y, color='blue', label='Данни')
         plt.plot(X, model.predict(X), color='red', label='Регресия')
@@ -36,7 +39,6 @@ def predict():
         plt.legend()
         plt.tight_layout()
 
-        # 📸 Конвертирай в base64 за HTML
         buf = io.BytesIO()
         plt.savefig(buf, format='png')
         buf.seek(0)
@@ -44,4 +46,4 @@ def predict():
         buf.close()
         plt.close()
 
-    return render_template('predict.html', form=form, prediction=prediction, graph_url=graph_url)
+    return render_template('ai/predict.html', form=form, prediction=prediction, graph_url=graph_url)
