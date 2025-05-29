@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required
-from app.forms import RegisterForm, LoginForm
+from app.auth.forms import RegisterForm, LoginForm
 from app.models import User
 from app.extensions import db
 
@@ -31,7 +31,9 @@ def register():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
-        if user and user.check_password(form.password.data):
-            login_user(user)
-            return redirect(url_for('main.home'))
+        username = form.username.data
+        password = form.password.data
+        flash("Успешен вход!", "success")
+        return redirect(url_for('main.dashboard'))  # или друга страница
+
+    return render_template('auth/login.html', form=form)

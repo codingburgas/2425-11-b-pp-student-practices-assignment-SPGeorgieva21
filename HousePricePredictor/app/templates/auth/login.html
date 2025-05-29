@@ -1,10 +1,32 @@
 {% extends 'base.html' %}
+
 {% block content %}
   <h2>Login</h2>
-  <form method="POST">
+  <form method="POST" action="">
     {{ form.hidden_tag() }}
-    {{ form.email.label }} {{ form.email() }}<br>
-    {{ form.password.label }} {{ form.password() }}<br>
-    {{ form.submit() }}
+
+    <div>
+      {{ form.username.label }}<br>
+      {{ form.username(size=32) }}
+    </div>
+
+    <div>
+      {{ form.password.label }}<br>
+      {{ form.password(size=32) }}
+    </div>
+
+    <div>
+      {{ form.confirm_password.label }}<br>
+      {{ form.confirm_password(size=32) }}
+    </div>
+
+    <div>
+      {{ form.role.label }}<br>
+      {{ form.role() }}
+    </div>
+
+    <div>
+      {{ form.submit() }}
+    </div>
   </form>
 {% endblock %}
