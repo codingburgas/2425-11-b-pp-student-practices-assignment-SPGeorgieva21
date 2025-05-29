@@ -1,11 +1,18 @@
 {% extends 'base.html' %}
+
 {% block content %}
   <h2>House Price Prediction</h2>
-  <form method="POST">
+  <form method="POST" action="">
     {{ form.hidden_tag() }}
-    {{ form.size.label }} {{ form.size(size=10) }} m² <br><br>
-    {{ form.rooms.label }} {{ form.rooms(size=10) }} стаи <br><br>
-    {{ form.submit(class="btn btn-primary") }}
+    <p>
+      {{ form.size.label }} {{ form.size(size=10) }} m²
+    </p>
+    <p>
+      {{ form.rooms.label }} {{ form.rooms(size=10) }} стаи
+    </p>
+    <p>
+      {{ form.submit(class="btn btn-primary") }}
+    </p>
   </form>
 
   {% if prediction %}

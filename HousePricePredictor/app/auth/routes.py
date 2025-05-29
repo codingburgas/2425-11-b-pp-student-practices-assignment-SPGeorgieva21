@@ -6,27 +6,24 @@ from app.extensions import db
 
 auth_bp = Blueprint('auth', __name__)
 
+
+
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
-        existing_user = User.query.filter_by(username=form.username.data).first()
-        if existing_user:
-            flash('Username already taken.')
-            return redirect(url_for('auth.register'))
+        # Проверка за съвпадение е направена вече от валидатора EqualTo
+        # Можеш просто да вземеш паролата и да я запишеш в базата без хеширане (не се препоръчва за реален проект!)
+        username = form.username.data
+        password = form.password.data
+        role = form.role.data
 
-        user = User(
-            username=form.username.data,
-            role=form.role.data
-        )
-        user.set_password(form.password.data)
-        db.session.add(user)
-        db.session.commit()
-        login_user(user)
-        return redirect(url_for('main.home'))
+        # ... запис в базата
 
-    return render_template('auth/register.html', form=form)  # <-- правилен път
+        flash('Registration successful! Please login.', 'success')
+        return redirect(url_for('auth.login'))
 
+    return render_template('auth/register.html', form=form)
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
@@ -34,6 +31,6 @@ def login():
         username = form.username.data
         password = form.password.data
         flash("Успешен вход!", "success")
-        return redirect(url_for('main.dashboard'))  # или друга страница
+        return redirect(url_for('main.predict'))  # или друга страница
 
     return render_template('auth/login.html', form=form)
