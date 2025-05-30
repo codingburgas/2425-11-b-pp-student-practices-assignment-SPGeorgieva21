@@ -9,11 +9,11 @@
 {% endblock %}
 
 {% block content %}
-  <div class="container mt-4">
-    <h1>Welcome to the House Price Predictor!</h1>
-    <p>
+  <div class="container mt-4 text-center">
+    <h1 class="mb-4">Welcome to the House Price Predictor!</h1>
+    <div class="d-flex justify-content-center gap-2">
       <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Register</a>
       <a href="{{ url_for('auth.login') }}" class="btn btn-secondary">Login</a>
-    </p>
+    </div>
   </div>
 {% endblock %}

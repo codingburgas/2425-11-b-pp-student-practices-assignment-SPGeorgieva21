@@ -1,26 +1,42 @@
 {% extends 'base.html' %}
 
+{% block style %}
+<style>
+  body {
+    background-color: #f5f0e6; /* мек бежов фон */
+  }
+</style>
+{% endblock %}
+
 {% block content %}
-  <h2>House Price Prediction</h2>
-  <form method="POST" action="">
-    {{ form.hidden_tag() }}
-    <p>
-      {{ form.size.label }} {{ form.size(size=10) }} m²
-    </p>
-    <p>
-      {{ form.rooms.label }} {{ form.rooms(size=10) }} стаи
-    </p>
-    <p>
-      {{ form.submit(class="btn btn-primary") }}
-    </p>
-  </form>
+  <div class="container mt-5 text-center">
+    <h2 class="mb-4">House Price Prediction</h2>
 
-  {% if prediction %}
-    <h3>Предсказана цена: €{{ prediction | round(2) }}</h3>
-  {% endif %}
+    <form method="POST" action="" class="d-inline-block text-start" style="max-width: 400px; width: 100%;">
+      {{ form.hidden_tag() }}
 
-  {% if graph_url %}
-    <h4>Графика на регресията:</h4>
-    <img src="data:image/png;base64,{{ graph_url }}" alt="Regression Plot" class="img-fluid">
-  {% endif %}
+      <div class="mb-3">
+        {{ form.size.label(class="form-label") }}
+        {{ form.size(class="form-control", placeholder="Size in m²") }}
+      </div>
+
+      <div class="mb-3">
+        {{ form.rooms.label(class="form-label") }}
+        {{ form.rooms(class="form-control", placeholder="Number of rooms") }}
+      </div>
+
+      <div class="mb-3">
+        {{ form.submit(class="btn btn-primary w-100") }}
+      </div>
+    </form>
+
+    {% if prediction %}
+      <h3 class="mt-4">Предсказана цена: €{{ prediction | round(2) }}</h3>
+    {% endif %}
+
+    {% if graph_url %}
+      <h4 class="mt-4">Графика на регресията:</h4>
+      <img src="data:image/png;base64,{{ graph_url }}" alt="Regression Plot" class="img-fluid mt-2">
+    {% endif %}
+  </div>
 {% endblock %}

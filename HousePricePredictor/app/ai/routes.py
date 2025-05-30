@@ -3,8 +3,8 @@ import base64
 import matplotlib.pyplot as plt
 from flask import Blueprint, render_template, redirect, url_for, request
 from flask_login import current_user
-from app.ai.forms import PredictForm
-from app.ai.model import SimpleLinearRegression
+from ..ai.forms import PredictForm
+from ..ai.model import SimpleLinearRegression
 
 ai_bp = Blueprint('ai', __name__, url_prefix='/ai', template_folder='templates')
 
