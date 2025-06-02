@@ -22,7 +22,7 @@ def edit_profile():
         current_user.set_password(form.new_password.data)  # хеширане на новата парола
         db.session.commit()
         flash('Профилът беше обновен успешно.', 'success')
-        return redirect(url_for('main.index'))
+        return redirect(url_for('ai.predict'))
 
     form.username.data = current_user.username
     return render_template('main/edit_profile.html', form=form)
