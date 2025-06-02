@@ -7,7 +7,7 @@
 
     <style>
       .navbar-container {
-        max-width: 1000px;
+        max-width: 800px;
         margin: 0 auto;
         background-color: white;
         border-radius: 12px;
@@ -30,6 +30,7 @@
                 <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">Вход</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.register') }}">Регистрация</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ url_for('ai.predict') }}">Прогноза</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('main.edit_profile') }}">Редактиране на профил</a></li>
             </ul>
         </div>
     </nav>

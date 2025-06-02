@@ -28,9 +28,11 @@ def register():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        username = form.username.data
-        password = form.password.data
-        flash("Успешен вход!", "success")
-        return redirect(url_for('main.predict'))  # или друга страница
-
+        user = User.query.filter_by(username=form.username.data).first()
+        if user and user.password == form.password.data:  # без хеширане
+            login_user(user)
+            flash("Успешен вход!", "success")
+            return redirect(url_for('main.predict'))
+        else:
+            flash("Грешно потребителско име или парола.", "danger")
     return render_template('auth/login.html', form=form)

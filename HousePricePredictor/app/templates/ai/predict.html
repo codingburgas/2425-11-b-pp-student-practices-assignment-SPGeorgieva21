@@ -1,26 +1,95 @@
 {% extends 'base.html' %}
 
+{% block style %}
+<style>
+  body {
+    background-color: #f5f0e6;
+  }
+  form {
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 30px;
+  }
+  h2, h3, h4 {
+    color: #333;
+    margin-bottom: 20px;
+  }
+  p {
+    margin-bottom: 15px;
+  }
+  .form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  .form-label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+  }
+  h3 {
+    color: #28a745;
+    margin-top: 30px;
+    text-align: center;
+  }
+  h4 {
+    text-align: center;
+    margin-top: 30px;
+  }
+  .img-fluid {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+</style>
+{% endblock %}
+
 {% block content %}
-  <h2>House Price Prediction</h2>
-  <form method="POST" action="">
-    {{ form.hidden_tag() }}
-    <p>
-      {{ form.size.label }} {{ form.size(size=10) }} m²
-    </p>
-    <p>
-      {{ form.rooms.label }} {{ form.rooms(size=10) }} стаи
-    </p>
-    <p>
-      {{ form.submit(class="btn btn-primary") }}
-    </p>
-  </form>
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <h2>House Price Prediction</h2>
+        <form method="POST" action="{{ url_for('main.predict') }}">
+          {{ form.hidden_tag() }}
 
-  {% if prediction %}
-    <h3>Предсказана цена: €{{ prediction | round(2) }}</h3>
-  {% endif %}
+          <div class="mb-3">
+            {{ form.size.label(class="form-label") }}
+            {{ form.size(class="form-control") }}
+            {% for error in form.size.errors %}
+              <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+          </div>
 
-  {% if graph_url %}
-    <h4>Графика на регресията:</h4>
-    <img src="data:image/png;base64,{{ graph_url }}" alt="Regression Plot" class="img-fluid">
-  {% endif %}
+          <div class="mb-3">
+            {{ form.rooms.label(class="form-label") }}
+            {{ form.rooms(class="form-control") }}
+            {% for error in form.rooms.errors %}
+              <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <div>
+            {{ form.submit(class="btn btn-primary") }}
+          </div>
+        </form>
+
+        {% if prediction %}
+          <h3>Предсказана цена: €{{ prediction | round(2) }}</h3>
+        {% endif %}
+
+        {% if graph_url %}
+          <h4>Графика на регресията:</h4>
+          <img src="data:image/png;base64,{{ graph_url }}" alt="Regression Plot" class="img-fluid">
+        {% endif %}
+      </div>
+    </div>
+  </div>
 {% endblock %}
