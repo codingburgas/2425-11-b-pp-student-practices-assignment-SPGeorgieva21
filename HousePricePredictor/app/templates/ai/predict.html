@@ -3,7 +3,7 @@
 {% block style %}
 <style>
   body {
-    background-color: #f5f0e6; /* мек бежов фон */
+    background-color: #f5f0e6;
   }
   form {
     padding: 20px;
@@ -19,7 +19,7 @@
   p {
     margin-bottom: 15px;
   }
-  .form-control {
+  .form-control, .form-select {
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
@@ -94,13 +94,20 @@
           {% endfor %}
         </div>
 
+        <div class="mb-3">
+          {{ form.furnished.label(class="form-label") }}
+          {{ form.furnished(class="form-select") }}
+          {% for error in form.furnished.errors %}
+            <div class="text-danger">{{ error }}</div>
+          {% endfor %}
+        </div>
+
         {% if prediction %}
           <h3 class="price-output">Прогнозна цена: €{{ prediction | round(2) }}</h3>
         {% endif %}
 
         <div class="btn-group">
           <button type="submit" name="action" value="predict" class="btn btn-primary">Пресметни</button>
-
           {% if prediction and not graph_url %}
             <button type="submit" name="action" value="show_graph" class="btn btn-secondary">Виж графиката</button>
           {% endif %}
