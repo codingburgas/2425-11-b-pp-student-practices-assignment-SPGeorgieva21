@@ -31,14 +31,30 @@
     font-weight: bold;
     color: #555;
   }
-  h3 {
-    color: #28a745;
-    margin-top: 30px;
-    text-align: center;
+  .btn-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
   }
-  h4 {
+  .btn {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+  }
+  .btn-primary {
+    background-color: #007bff;
+    color: white;
+  }
+  .btn-secondary {
+    background-color: #6c757d;
+    color: white;
+  }
+  h3.price-output {
     text-align: center;
-    margin-top: 30px;
+    color: #28a745;
+    margin-bottom: 10px;
   }
   .img-fluid {
     max-width: 100%;
@@ -48,48 +64,53 @@
     margin-right: auto;
     border: 1px solid #ddd;
     border-radius: 5px;
+    margin-top: 30px;
   }
 </style>
 {% endblock %}
 
 {% block content %}
-  <div class="container mt-5">
-    <div class="row justify-content-center">
-      <div class="col-md-6">
-        <h2>House Price Prediction</h2>
-        <form method="POST" action="{{ url_for('main.predict') }}">
-          {{ form.hidden_tag() }}
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <h2>Прогноза за цена на жилище</h2>
 
-          <div class="mb-3">
-            {{ form.size.label(class="form-label") }}
-            {{ form.size(class="form-control", placeholder="Size in m²") }}
-            {% for error in form.size.errors %}
-              <div class="text-danger">{{ error }}</div>
-            {% endfor %}
-          </div>
+      <form method="POST" action="{{ url_for('ai.predict') }}">
+        {{ form.hidden_tag() }}
 
-          <div class="mb-3">
-            {{ form.rooms.label(class="form-label") }}
-            {{ form.rooms(class="form-control", placeholder="Number of rooms") }}
-            {% for error in form.rooms.errors %}
-              <div class="text-danger">{{ error }}</div>
-            {% endfor %}
-          </div>
+        <div class="mb-3">
+          {{ form.size.label(class="form-label") }}
+          {{ form.size(class="form-control", placeholder="Размер (кв.м.)") }}
+          {% for error in form.size.errors %}
+            <div class="text-danger">{{ error }}</div>
+          {% endfor %}
+        </div>
 
-          <div>
-            {{ form.submit(class="btn btn-primary w-100") }}
-          </div>
-        </form>
+        <div class="mb-3">
+          {{ form.rooms.label(class="form-label") }}
+          {{ form.rooms(class="form-control", placeholder="Брой стаи") }}
+          {% for error in form.rooms.errors %}
+            <div class="text-danger">{{ error }}</div>
+          {% endfor %}
+        </div>
 
         {% if prediction %}
-          <h3>Предсказана цена: €{{ prediction | round(2) }}</h3>
+          <h3 class="price-output">Прогнозна цена: €{{ prediction | round(2) }}</h3>
         {% endif %}
 
-        {% if graph_url %}
-          <h4>Графика на регресията:</h4>
-          <img src="data:image/png;base64,{{ graph_url }}" alt="Regression Plot" class="img-fluid">
-        {% endif %}
-      </div>
+        <div class="btn-group">
+          <button type="submit" name="action" value="predict" class="btn btn-primary">Пресметни</button>
+
+          {% if prediction and not graph_url %}
+            <button type="submit" name="action" value="show_graph" class="btn btn-secondary">Виж графиката</button>
+          {% endif %}
+        </div>
+      </form>
+
+      {% if graph_url %}
+        <img src="data:image/png;base64,{{ graph_url }}" alt="Графика на регресията" class="img-fluid">
+      {% endif %}
     </div>
   </div>
+</div>
 {% endblock %}

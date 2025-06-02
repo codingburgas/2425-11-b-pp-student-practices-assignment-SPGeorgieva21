@@ -30,7 +30,7 @@ def register():
 def login():
     if current_user.is_authenticated:
         # Ако вече е логнат, директно го пращаме на прогнозата
-        return redirect(url_for('main.predict'))
+        return redirect(url_for('ai.predict'))
 
     form = LoginForm()
     if form.validate_on_submit():
@@ -38,7 +38,7 @@ def login():
         if user and user.check_password(form.password.data):
             login_user(user)
             flash("Успешен вход!", "success")
-            return redirect(url_for('main.predict'))
+            return redirect(url_for('ai.predict'))
         else:
             flash("Грешно потребителско име или парола.", "danger")
     return render_template('auth/login.html', form=form)
@@ -47,4 +47,4 @@ def login():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('auth.login'))
+    return redirect(url_for('main.index'))
