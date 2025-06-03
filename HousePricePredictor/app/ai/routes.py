@@ -17,13 +17,14 @@ def predict():
     form = PredictForm()
     prediction = None
     graph_url = None
-    show_graph_button = False
+    loss_graph_url = None
 
     if form.validate_on_submit():
         size = form.size.data
         rooms = form.rooms.data
         furnished = form.furnished.data
         furnished_numeric = 1 if furnished == 'yes' else 0
+        city = form.city.data  # Взимаме града
 
         action = request.form.get("action")
 
@@ -31,7 +32,7 @@ def predict():
         size_log = np.log(size + 1)
         x_data = np.array([[size_log, rooms, furnished_numeric]])
 
-        # Примерни обучаващи данни
+        # Обучаващи данни
         sizes = np.array([50, 60, 70, 80, 90, 100])
         sizes_log = np.log(sizes + 1)
         rooms_arr = np.array([2, 3, 3, 4, 4, 5])
@@ -44,14 +45,24 @@ def predict():
         model.fit(X, y)
 
         prediction = model.predict(x_data)[0]
-        show_graph_button = True
+
+        # Корекция на цената според града
+        city_factors = {
+            'sofia': 1.3,
+            'plovdiv': 1.1,
+            'varna': 1.0,
+            'burgas': 0.9
+        }
+        factor = city_factors.get(city, 1.0)
+        prediction *= factor
 
         if action == "show_graph":
+            # Графика 1: Данни + регресионна линия
             plt.figure(figsize=(6, 4))
             plt.scatter(sizes, y, color='blue', label='Данни')
 
             rooms_mean = np.mean(rooms_arr)
-            furnished_fixed = 1  # Визуализация при обзаведено
+            furnished_fixed = 1
 
             sizes_plot = np.linspace(min(sizes), max(sizes), 100)
             sizes_plot_log = np.log(sizes_plot + 1)
@@ -65,14 +76,36 @@ def predict():
             plt.plot(sizes_plot, y_plot, color='red', label='Регресия (лог)')
             plt.xlabel("Размер (кв.м.)")
             plt.ylabel("Цена (€)")
+            plt.title("Регресия върху данните")
             plt.legend()
             plt.tight_layout()
 
-            buf = io.BytesIO()
-            plt.savefig(buf, format='png')
-            buf.seek(0)
-            graph_url = base64.b64encode(buf.getvalue()).decode('utf-8')
-            buf.close()
+            buf1 = io.BytesIO()
+            plt.savefig(buf1, format='png')
+            buf1.seek(0)
+            graph_url = base64.b64encode(buf1.getvalue()).decode('utf-8')
+            buf1.close()
             plt.close()
 
-    return render_template('ai/predict.html', form=form, prediction=prediction, graph_url=graph_url, show_graph_button=show_graph_button)
+            # Графика 2: Загуба (MSE)
+            plt.figure(figsize=(6, 4))
+            plt.plot(model.loss_history, color='orange')
+            plt.xlabel("Итерация")
+            plt.ylabel("Загуба (MSE)")
+            plt.title("Загуба при обучението")
+            plt.tight_layout()
+
+            buf2 = io.BytesIO()
+            plt.savefig(buf2, format='png')
+            buf2.seek(0)
+            loss_graph_url = base64.b64encode(buf2.getvalue()).decode('utf-8')
+            buf2.close()
+            plt.close()
+
+    return render_template(
+        'ai/predict.html',
+        form=form,
+        prediction=prediction,
+        graph_url=graph_url,
+        loss_graph_url=loss_graph_url
+    )
