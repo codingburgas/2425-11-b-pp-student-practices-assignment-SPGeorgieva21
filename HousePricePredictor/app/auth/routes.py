@@ -11,10 +11,12 @@ def register():
     form = RegisterForm()
     if form.validate_on_submit():
         username = form.username.data
+        email = form.email.data
+
         password = form.password.data
         role = form.role.data
 
-        user = User(username=username, role=role)
+        user = User(username=username,email=email, role=role)
         user.set_password(password)
 
         db.session.add(user)

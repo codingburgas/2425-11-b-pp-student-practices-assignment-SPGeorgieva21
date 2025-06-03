@@ -5,6 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), nullable=False, unique=True)
+    email = db.Column(db.String(150), nullable=False, unique=True)  # добавено поле
     password_hash = db.Column(db.String(256), nullable=False)
     role = db.Column(db.String(50), default='user')
 
@@ -21,7 +22,6 @@ class Prediction(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     result = db.Column(db.String(256))
-
 
 class Model(db.Model):
     id = db.Column(db.Integer, primary_key=True)
