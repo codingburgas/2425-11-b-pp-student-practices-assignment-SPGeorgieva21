@@ -28,7 +28,11 @@
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav">
                 {% if current_user.is_authenticated %}
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('ai.predict') }}">Прогноза</a></li>
+                    {% if current_user.role == 'admin' %}
+                      <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.admin_dashboard') }}">Админ панел</a></li>
+                    {% else %}
+                      <li class="nav-item"><a class="nav-link" href="{{ url_for('ai.predict') }}">Прогноза</a></li>
+                    {% endif %}
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('main.edit_profile') }}">Редактиране на профил</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.logout') }}">Изход</a></li>
                 {% else %}

@@ -14,7 +14,6 @@ def register():
         password = form.password.data
         role = form.role.data
 
-        # Създаваме нов потребител и хешираме паролата
         user = User(username=username, role=role)
         user.set_password(password)
 
@@ -29,8 +28,11 @@ def register():
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        # Ако вече е логнат, директно го пращаме на прогнозата
-        return redirect(url_for('ai.predict'))
+        # Ако вече е логнат, пращаме според ролята
+        if current_user.role == 'admin':
+            return redirect(url_for('admin.admin_dashboard'))
+        else:
+            return redirect(url_for('ai.predict'))
 
     form = LoginForm()
     if form.validate_on_submit():
@@ -38,7 +40,11 @@ def login():
         if user and user.check_password(form.password.data):
             login_user(user)
             flash("Успешен вход!", "success")
-            return redirect(url_for('ai.predict'))
+            # След логин пренасочваме според ролята
+            if user.role == 'admin':
+                return redirect(url_for('admin.admin_dashboard'))
+            else:
+                return redirect(url_for('ai.predict'))
         else:
             flash("Грешно потребителско име или парола.", "danger")
     return render_template('auth/login.html', form=form)
