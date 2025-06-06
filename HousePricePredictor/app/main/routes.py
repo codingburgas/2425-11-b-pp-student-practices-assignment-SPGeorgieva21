@@ -26,3 +26,11 @@ def edit_profile():
 
     form.username.data = current_user.username
     return render_template('main/edit_profile.html', form=form)
+
+@main_bp.route('/about')
+def about():
+    return render_template('main/about.html')
+
+@main_bp.route('/contact')
+def contact():
+    return render_template('main/contact.html')

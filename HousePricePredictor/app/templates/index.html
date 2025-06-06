@@ -1,22 +1,16 @@
 {% extends 'base.html' %}
 
-{% block style %}
-<style>
-  body {
-    background-color: #f5f0e6; /* мек бежов фон */
-  }
-</style>
-{% endblock %}
-
 {% block content %}
-  <div class="container mt-4 text-center">
-    <h1 class="mb-4">Welcome to the House Price Predictor!</h1>
-    <div class="d-flex justify-content-center gap-2">
-      <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Register</a>
-      <a href="{{ url_for('auth.login') }}" class="btn btn-secondary">Login</a>
+<div class="home-background">
+  <div class="home-content text-center">
+    <h1 class="mb-6 home-title">Welcome to the House Price Predictor!</h1>
+    <div class="home-buttons">
+      <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg">Register</a>
+      <a href="{{ url_for('auth.login') }}" class="btn btn-secondary btn-lg">Login</a>
       {% if current_user.is_authenticated %}
-        <a href="{{ url_for('main.edit_profile') }}" class="btn btn-warning">Редактиране на профил</a>
+        <a href="{{ url_for('main.edit_profile') }}" class="btn btn-warning btn-lg">Edit Profile</a>
       {% endif %}
     </div>
   </div>
+</div>
 {% endblock %}

@@ -1,58 +1,13 @@
 {% extends 'base.html' %}
 
-{% block style %}
-<style>
-  body {
-    background-color: #f5f0e6;
-  }
-
-  form {
-    padding: 20px;
-    border-radius: 8px;
-    background-color: #ffffff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-top: 30px;
-  }
-
-  h2 {
-    color: #333;
-    margin-bottom: 20px;
-    text-align: center;
-  }
-
-  .form-label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: #555;
-  }
-
-  .form-control {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-
-  .text-danger {
-    margin-top: 5px;
-    font-size: 0.9rem;
-  }
-
-  .btn {
-    margin-top: 15px;
-  }
-</style>
-{% endblock %}
-
 {% block content %}
+<div class="form-container">
   <div class="container mt-5">
     <div class="row justify-content-center">
       <div class="col-md-6">
-        <h2>Редакция на профил</h2>
-        <form method="POST" action="">
+        <form method="POST" action="" class="edit-profile-form">
+          <h2>Edit Profile</h2>
           {{ form.hidden_tag() }}
-
           <div class="mb-3">
             {{ form.username.label(class="form-label") }}
             {{ form.username(class="form-control") }}
@@ -60,7 +15,6 @@
               <div class="text-danger">{{ error }}</div>
             {% endfor %}
           </div>
-
           <div class="mb-3">
             {{ form.old_password.label(class="form-label") }}
             {{ form.old_password(class="form-control") }}
@@ -68,7 +22,6 @@
               <div class="text-danger">{{ error }}</div>
             {% endfor %}
           </div>
-
           <div class="mb-3">
             {{ form.new_password.label(class="form-label") }}
             {{ form.new_password(class="form-control") }}
@@ -76,7 +29,6 @@
               <div class="text-danger">{{ error }}</div>
             {% endfor %}
           </div>
-
           <div>
             {{ form.submit(class="btn btn-primary") }}
           </div>
@@ -84,4 +36,5 @@
       </div>
     </div>
   </div>
+</div>
 {% endblock %}

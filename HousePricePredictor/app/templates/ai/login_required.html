@@ -1,31 +1,14 @@
 {% extends 'base.html' %}
 
-{% block style %}
-<style>
-  body {
-    background-color: #f5f0e6;
-  }
-  .warning-container {
-    background-color: #ffe6e6;
-    border: 1px solid #cc0000;
-    border-radius: 12px;
-    padding: 2rem;
-    text-align: center;
-    max-width: 600px;
-    margin: 2rem auto;
-  }
-  h2 {
-    color: #cc0000;
-    font-weight: bold;
-  }
-</style>
-{% endblock %}
-
 {% block content %}
+<div class="form-container">
   <div class="warning-container">
     <h2>Прогноза</h2>
     <p class="text-danger fs-5">Първо трябва да се впишете в системата!</p>
-    <a href="{{ url_for('auth.login') }}" class="btn btn-danger me-2">Вход</a>
-    <a href="{{ url_for('auth.register') }}" class="btn btn-outline-danger">Регистрация</a>
+    <div class="warning-buttons">
+      <a href="{{ url_for('auth.login') }}" class="btn btn-danger me-2">Вход</a>
+      <a href="{{ url_for('auth.register') }}" class="btn btn-outline-danger">Регистрация</a>
+    </div>
   </div>
+</div>
 {% endblock %}

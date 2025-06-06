@@ -1,18 +1,10 @@
 {% extends 'base.html' %}
 
-{% block style %}
-<style>
-  body {
-    background-color: #f5f0e6; /* мек бежов фон */
-  }
-</style>
-{% endblock %}
-
 {% block content %}
-  <h2>Login</h2>
+<div class="form-container">
   <form method="POST" action="">
+    <h2>Login</h2>
     {{ form.hidden_tag() }}
-
     <div class="mb-3">
       {{ form.username.label(class="form-label") }}
       {{ form.username(class="form-control") }}
@@ -20,7 +12,6 @@
         <div class="text-danger">{{ error }}</div>
       {% endfor %}
     </div>
-
     <div class="mb-3">
       {{ form.password.label(class="form-label") }}
       {{ form.password(class="form-control") }}
@@ -28,9 +19,14 @@
         <div class="text-danger">{{ error }}</div>
       {% endfor %}
     </div>
-
     <div>
-      {{ form.submit(class="btn btn-primary") }}
+      {{ form.submit(class="btn btn-primary w-100") }}
     </div>
+    
+  <div class="text-center mt-4">
+    <p>Don't have an account?</p>
+    <a href="{{ url_for('auth.register') }}" class="btn btn-secondary">Register</a>
+  </div>
+</div>
   </form>
 {% endblock %}

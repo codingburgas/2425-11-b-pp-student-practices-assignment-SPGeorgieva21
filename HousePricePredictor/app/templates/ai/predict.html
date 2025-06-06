@@ -1,169 +1,70 @@
 {% extends 'base.html' %}
 
-{% block style %}
-<style>
-  body {
-    background-color: #f5f0e6;
-  }
-  form {
-    padding: 25px;
-    border-radius: 8px;
-    background-color: #ffffff;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-    margin-top: 30px;
-  }
-  h2, h3, h4 {
-    color: #333;
-    margin-bottom: 20px;
-  }
-  p {
-    margin-bottom: 15px;
-  }
-  .form-control, .form-select {
-    width: 100%;
-    padding: 12px 15px;
-    border: 1.5px solid #ccc;
-    border-radius: 6px;
-    font-size: 1rem;
-  }
-  .form-label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-    color: #555;
-  }
-  .btn-group {
-    display: flex;
-    gap: 15px;
-    margin-top: 25px;
-    justify-content: center;
-  }
-  .btn {
-    padding: 12px 28px;
-    font-size: 1.1rem;
-    border-radius: 6px;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  .btn-primary {
-    background-color: #007bff;
-    color: white;
-  }
-  .btn-primary:hover {
-    background-color: #0056b3;
-  }
-  .btn-secondary {
-    background-color: #6c757d;
-    color: white;
-  }
-  .btn-secondary:hover {
-    background-color: #495057;
-  }
-  h3.price-output {
-    text-align: center;
-    color: #28a745;
-    margin-bottom: 20px;
-    font-weight: 700;
-    font-size: 1.8rem;
-  }
-  .graphs-row {
-    display: flex;
-    justify-content: space-between;
-    gap: 30px;
-    margin-top: 45px;
-  }
-  .graph-container {
-    flex: 0 0 48%;
-    text-align: center;
-  }
-  .graph-container h4 {
-    margin-bottom: 15px;
-    font-weight: 600;
-  }
-  .img-fluid {
-    width: 100%;
-    height: auto;
-    border: 2px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  }
-
-  @media (max-width: 768px) {
-    .graphs-row {
-      flex-direction: column;
-    }
-    .graph-container {
-      flex: 1 1 100%;
-      margin-bottom: 30px;
-    }
-  }
-</style>
-{% endblock %}
-
 {% block content %}
 <div class="container mt-5">
   <div class="row justify-content-center">
     <div class="col-md-8">
-      <h2>Прогноза за цена на жилище</h2>
+      <div class="predict-form-container">
+        <h2>Прогноза за цена на жилище</h2>
 
-      <form method="POST" action="{{ url_for('ai.predict') }}">
-        {{ form.hidden_tag() }}
+        <form method="POST" action="{{ url_for('ai.predict') }}" class="predict-form">
+          {{ form.hidden_tag() }}
 
-        <div class="mb-3">
-          {{ form.size.label(class="form-label") }}
-          {{ form.size(class="form-control", placeholder="Размер (кв.м.)") }}
-        </div>
+          <div class="mb-3">
+            {{ form.size.label(class="form-label") }}
+            {{ form.size(class="form-control", placeholder="Размер (кв.м.)") }}
+          </div>
 
-        <div class="mb-3">
-          {{ form.rooms.label(class="form-label") }}
-          {{ form.rooms(class="form-control", placeholder="Брой стаи") }}
-        </div>
+          <div class="mb-3">
+            {{ form.rooms.label(class="form-label") }}
+            {{ form.rooms(class="form-control", placeholder="Брой стаи") }}
+          </div>
 
-        <div class="mb-3">
-          {{ form.furnished.label(class="form-label") }}
-          {{ form.furnished(class="form-select") }}
-        </div>
+          <div class="mb-3">
+            {{ form.furnished.label(class="form-label") }}
+            {{ form.furnished(class="form-select") }}
+          </div>
 
-        <div class="mb-3">
-          {{ form.floor.label(class="form-label") }}
-          {{ form.floor(class="form-control", placeholder="Етаж") }}
-        </div>
+          <div class="mb-3">
+            {{ form.floor.label(class="form-label") }}
+            {{ form.floor(class="form-control", placeholder="Етаж") }}
+          </div>
 
-        <div class="mb-3">
-          {{ form.city.label(class="form-label") }}
-          {{ form.city(class="form-select") }}
-        </div>
+          <div class="mb-3">
+            {{ form.city.label(class="form-label") }}
+            {{ form.city(class="form-select") }}
+          </div>
 
-        {% if prediction %}
-          <h3 class="price-output">Прогнозна цена: €{{ prediction | round(2) }}</h3>
-        {% endif %}
-
-        <div class="btn-group">
-          <button type="submit" name="action" value="predict" class="btn btn-primary">Пресметни</button>
           {% if prediction %}
-            <button type="submit" name="action" value="show_graph" class="btn btn-secondary">Виж графиката</button>
-          {% endif %}
-        </div>
-      </form>
-
-      {% if graph_url or loss_graph_url %}
-        <div class="graphs-row">
-          {% if graph_url %}
-            <div class="graph-container">
-              <h4>Данни и регресионна линия</h4>
-              <img src="data:image/png;base64,{{ graph_url }}" alt="Графика на регресията" class="img-fluid">
-            </div>
+            <h3 class="price-output">Прогнозна цена: €{{ prediction | round(2) }}</h3>
           {% endif %}
 
-          {% if loss_graph_url %}
-            <div class="graph-container">
-              <h4>Загуба по итерации</h4>
-              <img src="data:image/png;base64,{{ loss_graph_url }}" alt="Графика на загубата" class="img-fluid">
-            </div>
-          {% endif %}
-        </div>
-      {% endif %}
+          <div class="btn-group-predict">
+            <button type="submit" name="action" value="predict" class="btn btn-primary">Пресметни</button>
+            {% if prediction %}
+              <button type="submit" name="action" value="show_graph" class="btn btn-secondary">Виж графиката</button>
+            {% endif %}
+          </div>
+        </form>
+
+        {% if graph_url or loss_graph_url %}
+          <div class="graphs-row">
+            {% if graph_url %}
+              <div class="graph-container">
+                <h4>Данни и регресионна линия</h4>
+                <img src="data:image/png;base64,{{ graph_url }}" alt="Графика на регресията" class="img-fluid graph-image">
+              </div>
+            {% endif %}
+
+            {% if loss_graph_url %}
+              <div class="graph-container">
+                <h4>Загуба по итерации</h4>
+                <img src="data:image/png;base64,{{ loss_graph_url }}" alt="Графика на загубата" class="img-fluid graph-image">
+              </div>
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
     </div>
   </div>
 </div>
