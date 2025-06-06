@@ -1,10 +1,52 @@
 {% extends "base.html" %}
-
-{% block title %}About Us{% endblock %}
-
+{% block title %}About Us - Our Story{% endblock %}
 {% block content %}
-<div class="container">
-  <h1>About Us</h1>
-  <p>This is the About page of our website.</p>
+<div class="page-container">
+  <div class="page-hero">
+    <h1 class="page-title">About Us</h1>
+    <p class="subtitle">Discover our story, mission, and the passion that drives us forward</p>
+  </div>
+
+  <div class="content-section">
+    <div class="about-content">
+      <p>Welcome to our company! We are a passionate team dedicated to delivering exceptional solutions and creating meaningful experiences for our clients. Our journey began with a simple vision: to make a positive impact through innovation and dedication.</p>
+
+      <p>With years of experience in the industry, we have built a reputation for excellence, reliability, and customer satisfaction. Our diverse team brings together expertise from various fields, allowing us to approach challenges from multiple perspectives and deliver comprehensive solutions.</p>
+
+      <p>We believe in the power of collaboration, continuous learning, and pushing the boundaries of what's possible. Our commitment to quality and attention to detail sets us apart in everything we do.</p>
+    </div>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <span class="feature-icon">🎯</span>
+        <h3 class="enhanced-feature-card h3">Our Mission</h3>
+        <p>To empower businesses and individuals through innovative solutions that drive growth and success.</p>
+      </div>
+
+      <div class="feature-card">
+        <span class="feature-icon">👁️</span>
+        <h3 class="enhanced-feature-card h3">Our Vision</h3>
+        <p>To be a leading force in our industry, recognized for excellence, innovation, and positive impact.</p>
+      </div>
+
+      <div class="feature-card">
+        <span class="feature-icon">⭐</span>
+        <h3 class="enhanced-feature-card h3">Our Values</h3>
+        <p>Integrity, innovation, collaboration, and customer-centricity guide everything we do.</p>
+      </div>
+
+      <div class="feature-card">
+        <span class="feature-icon">🚀</span>
+        <h3 class="enhanced-feature-card h3">Our Approach</h3>
+        <p>We combine creativity with technical expertise to deliver solutions that exceed expectations.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="enhanced-cta-section">
+    <h2>Ready to Work Together?</h2>
+    <p>Let's discuss how we can help you achieve your goals and bring your vision to life.</p>
+    <a href="/contact" class="enhanced-btn">Get in Touch</a>
+  </div>
 </div>
 {% endblock %}

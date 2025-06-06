@@ -21,6 +21,8 @@ def admin_dashboard():
                            total_models=total_models)
 
 
+
+
 @admin_bp.route('/edit_user/<int:user_id>', methods=['GET', 'POST'])
 @login_required
 def edit_user(user_id):
