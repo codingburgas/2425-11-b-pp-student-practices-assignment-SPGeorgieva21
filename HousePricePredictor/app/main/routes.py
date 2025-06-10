@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template
 from flask_login import login_required, current_user
 from app.models import Prediction
+from app.main.forms import EditProfileForm
 
 main_bp = Blueprint('main', __name__)
 
@@ -11,8 +12,10 @@ def index():
 @main_bp.route('/edit_profile', methods=['GET', 'POST'])
 @login_required
 def edit_profile():
-    # Тук е твоята логика за редакция на профил (оставям я както е)
-    pass  # замени с твоята имплементация
+    form = EditProfileForm();
+
+
+    return render_template('main/edit_profile.html',form=form)
 
 @main_bp.route('/prediction_history')
 @login_required
@@ -23,9 +26,9 @@ def prediction_history():
 
 @main_bp.route('/about')
 def about():
-    return render_template('about.html')
+    return render_template('main/about.html')
 
 @main_bp.route('/contact')
 def contact():
-    return render_template('contac.html')
+    return render_template('main/contact.html')
 
