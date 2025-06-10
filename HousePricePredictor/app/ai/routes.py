@@ -6,6 +6,7 @@ from flask import Blueprint, render_template, request
 from flask_login import current_user
 from ..ai.forms import PredictForm
 from ..ai.model import SimpleLinearRegression
+from ..models import db, Model  # <- добавено
 
 ai_bp = Blueprint('ai', __name__, url_prefix='/ai', template_folder='templates')
 
@@ -43,6 +44,16 @@ def predict():
 
         model = SimpleLinearRegression()
         model.fit(X, y)
+
+        # --- Добавяме запис на модела в базата ---
+        new_model = Model(
+            name="SimpleLinearRegression",
+            version="1.0"
+            # Ако имаш user_id в модела, можеш да добавиш user_id=current_user.id
+        )
+        db.session.add(new_model)
+        db.session.commit()
+        # -----------------------------------------
 
         prediction = model.predict(x_data)[0]
 

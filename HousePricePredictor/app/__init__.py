@@ -1,5 +1,6 @@
 from flask import Flask
 from app.models import db
+from flask_migrate import Migrate  # <--- добави това
 from app.auth.routes import auth_bp
 from app.main.routes import main_bp
 from app.ai.routes import ai_bp
@@ -13,6 +14,8 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 
     db.init_app(app)
+
+    migrate = Migrate(app, db)  # <--- инициализирай миграцията
 
     login_manager = LoginManager()
     login_manager.login_view = 'auth.login'
