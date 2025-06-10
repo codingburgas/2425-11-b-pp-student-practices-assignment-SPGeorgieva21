@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
-from app.models import User, Prediction, Model  # Импортирай всички модели, ако ги имаш
+from app.models import User, Prediction, Model
+from app import db
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -14,14 +15,13 @@ def admin_dashboard():
     total_users = User.query.count()
     total_predictions = Prediction.query.count()
     total_models = Model.query.count()
+    users = User.query.all()  # <-- Добавено
 
     return render_template('admin/dashboard.html',
                            total_users=total_users,
                            total_predictions=total_predictions,
-                           total_models=total_models)
-
-
-
+                           total_models=total_models,
+                           users=users)  # <-- Добавено
 
 @admin_bp.route('/edit_user/<int:user_id>', methods=['GET', 'POST'])
 @login_required
@@ -41,8 +41,6 @@ def edit_user(user_id):
         if role:
             user.role = role
 
-        # Тук може да добавиш commit и flash съобщения
-        from app import db
         db.session.commit()
 
         flash('Потребителят беше обновен успешно.', 'success')
