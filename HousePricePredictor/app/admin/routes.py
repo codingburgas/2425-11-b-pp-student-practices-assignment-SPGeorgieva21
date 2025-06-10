@@ -5,6 +5,7 @@ from app import db
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
+
 @admin_bp.route('/dashboard')
 @login_required
 def admin_dashboard():
@@ -15,13 +16,14 @@ def admin_dashboard():
     total_users = User.query.count()
     total_predictions = Prediction.query.count()
     total_models = Model.query.count()
-    users = User.query.all()  # <-- Добавено
+    users = User.query.all()
 
     return render_template('admin/dashboard.html',
                            total_users=total_users,
                            total_predictions=total_predictions,
                            total_models=total_models,
-                           users=users)  # <-- Добавено
+                           users=users)
+
 
 @admin_bp.route('/edit_user/<int:user_id>', methods=['GET', 'POST'])
 @login_required
@@ -42,8 +44,23 @@ def edit_user(user_id):
             user.role = role
 
         db.session.commit()
-
         flash('Потребителят беше обновен успешно.', 'success')
         return redirect(url_for('admin.admin_dashboard'))
 
-    return render_template('admin/edit_user.html', user=user)
+    return render_template('admin/user_edit.html', user=user)
+
+
+@admin_bp.route('/delete_user/<int:user_id>', methods=['POST'])
+@login_required
+def delete_user(user_id):
+    if current_user.role != 'admin':
+        flash('Нямате достъп до тази страница.', 'danger')
+        return redirect(url_for('main.index'))
+
+    user = User.query.get_or_404(user_id)
+
+    db.session.delete(user)
+    db.session.commit()
+
+    flash('Потребителят беше изтрит успешно.', 'success')
+    return redirect(url_for('admin.admin_dashboard'))
