@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}История на прогнозите{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>История на прогнозите</h2>
+    {% if predictions %}
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Резултат</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for prediction in predictions %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ prediction.result }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>Все още нямате направени прогнози.</p>
+    {% endif %}
+</div>
+{% endblock %}
