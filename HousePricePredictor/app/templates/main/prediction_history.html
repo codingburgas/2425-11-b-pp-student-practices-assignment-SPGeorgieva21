@@ -5,7 +5,7 @@
     <div class="history-header">
         <h1 class="history-title">История на прогнозите</h1>
     </div>
-    
+
     {% if predictions %}
     <div class="predictions-grid">
         {% for prediction in predictions %}
@@ -16,26 +16,12 @@
             </div>
             <div class="prediction-content">
                 <div class="prediction-details">
-                    <div class="detail-item">
-                        <span class="detail-label">Площ:</span>
-                        <span class="detail-value">{{ prediction.area or 'N/A' }} м²</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">Стаи:</span>
-                        <span class="detail-value">{{ prediction.rooms or 'N/A' }}</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">Район:</span>
-                        <span class="detail-value">{{ prediction.neighborhood or 'N/A' }}</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">Етаж:</span>
-                        <span class="detail-value">{{ prediction.floor or 'N/A' }}</span>
-                    </div>
+                    <div class="detail-item"><span class="detail-label">Площ:</span><span class="detail-value">{{ prediction.area or 'N/A' }} м²</span></div>
+                    <div class="detail-item"><span class="detail-label">Стаи:</span><span class="detail-value">{{ prediction.rooms or 'N/A' }}</span></div>
+                    <div class="detail-item"><span class="detail-label">Район:</span><span class="detail-value">{{ prediction.neighborhood or 'N/A' }}</span></div>
+                    <div class="detail-item"><span class="detail-label">Етаж:</span><span class="detail-value">{{ prediction.floor or 'N/A' }}</span></div>
                 </div>
-                <div class="prediction-result">
-                    {{ "€{:,.0f}".format(prediction.result) if prediction.result else 'N/A' }}
-                </div>
+                <div class="prediction-result">{{ "€{:,.0f}".format(prediction.result) if prediction.result else 'N/A' }}</div>
             </div>
         </div>
         {% endfor %}
@@ -46,6 +32,30 @@
         <h3>Все още нямате направени прогнози</h3>
         <p>Започнете да използвате нашия инструмент за прогнозиране на цени на имоти.</p>
         <a href="{{ url_for('ai.predict') }}" class="cta-button">Направете прогноза</a>
+    </div>
+    {% endif %}
+
+    {% if others_predictions %}
+    <hr class="my-5">
+    <h3 class="mb-3">Прогнози от други потребители</h3>
+    <div class="predictions-grid">
+        {% for prediction in others_predictions %}
+        <div class="prediction-card">
+            <div class="prediction-header">
+                <div class="prediction-number">Потребител: {{ prediction.user.username }}</div>
+                <div class="prediction-date">{{ prediction.timestamp.strftime('%d.%m.%Y %H:%M') }}</div>
+            </div>
+            <div class="prediction-content">
+                <div class="prediction-details">
+                    <div class="detail-item"><span class="detail-label">Площ:</span><span class="detail-value">{{ prediction.area }} м²</span></div>
+                    <div class="detail-item"><span class="detail-label">Стаи:</span><span class="detail-value">{{ prediction.rooms }}</span></div>
+                    <div class="detail-item"><span class="detail-label">Район:</span><span class="detail-value">{{ prediction.neighborhood }}</span></div>
+                    <div class="detail-item"><span class="detail-label">Етаж:</span><span class="detail-value">{{ prediction.floor }}</span></div>
+                </div>
+                <div class="prediction-result">{{ "€{:,.0f}".format(prediction.result) }}</div>
+            </div>
+        </div>
+        {% endfor %}
     </div>
     {% endif %}
 </div>
