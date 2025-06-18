@@ -9,26 +9,27 @@
 </head>
 <body>
   <a href="/" class="d-inline-block m-3" style="position: fixed; top: 0; left: 0; z-index: 1030;">
-  <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" height="50">
-</a>
-
+    <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" height="50">
+  </a>
 
 {% if (request.path not in ['/']) or current_user.is_authenticated %}
 <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4 navbar-container">
   <div class="container-fluid">
     <a class="navbar-brand" href="/">Home</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" 
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
       aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-  
+
         {% if current_user.is_authenticated %}
           {% if current_user.role == 'admin' %}
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('admin.admin_dashboard') }}">Admin panel</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('admin.admin_history') }}">All Predictions</a>
             </li>
           {% else %}
             <li class="nav-item">
@@ -38,6 +39,7 @@
               <a class="nav-link" href="{{ url_for('main.prediction_history') }}">See history</a>
             </li>
           {% endif %}
+
           <li class="nav-item">
             <a class="nav-link" href="{{ url_for('main.edit_profile') }}">Edit Profile</a>
           </li>
@@ -52,11 +54,14 @@
             <a class="nav-link" href="{{ url_for('auth.register') }}">Register</a>
           </li>
         {% endif %}
-         <a class="nav-link" href="{{ url_for('main.about') }}">About</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="{{ url_for('main.contact') }}">Contact</a>
-  </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('main.about') }}">About</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('main.contact') }}">Contact</a>
+        </li>
+
       </ul>
     </div>
   </div>
