@@ -6,7 +6,7 @@ from flask import Blueprint, render_template, request
 from flask_login import current_user
 from ..ai.forms import PredictForm
 from ..ai.model import SimpleLinearRegression
-from ..models import db, Model  # <- добавено
+from ..models import db, Model, PredictionHistory
 
 ai_bp = Blueprint('ai', __name__, url_prefix='/ai', template_folder='templates')
 
@@ -19,21 +19,22 @@ def predict():
     prediction = None
     graph_url = None
     loss_graph_url = None
+    new_prediction = None
 
     if form.validate_on_submit():
         size = form.size.data
         rooms = form.rooms.data
         furnished = form.furnished.data
         furnished_numeric = 1 if furnished == 'yes' else 0
-        city = form.city.data  # Взимаме града
+        city = form.city.data
 
         action = request.form.get("action")
 
-        # Подготовка на входа
+        # Prepare input
         size_log = np.log(size + 1)
         x_data = np.array([[size_log, rooms, furnished_numeric]])
 
-        # Обучаващи данни
+        # Training data
         sizes = np.array([50, 60, 70, 80, 90, 100])
         sizes_log = np.log(sizes + 1)
         rooms_arr = np.array([2, 3, 3, 4, 4, 5])
@@ -45,19 +46,14 @@ def predict():
         model = SimpleLinearRegression()
         model.fit(X, y)
 
-        # --- Добавяме запис на модела в базата ---
-        new_model = Model(
-            name="SimpleLinearRegression",
-            version="1.0"
-            # Ако имаш user_id в модела, можеш да добавиш user_id=current_user.id
-        )
+        # Save model to DB
+        new_model = Model(name="SimpleLinearRegression", version="1.0")
         db.session.add(new_model)
         db.session.commit()
-        # -----------------------------------------
 
         prediction = model.predict(x_data)[0]
 
-        # Корекция на цената според града
+        # Adjust price based on city
         city_factors = {
             'sofia': 1.3,
             'plovdiv': 1.1,
@@ -67,14 +63,24 @@ def predict():
         factor = city_factors.get(city, 1.0)
         prediction *= factor
 
+        # Always save prediction history when prediction is made
+        new_prediction = PredictionHistory(
+            user_id=current_user.id,
+            area=size,
+            rooms=rooms,
+            furnished=furnished_numeric,
+            city=city,
+            result=prediction
+        )
+        db.session.add(new_prediction)
+        db.session.commit()
+
         if action == "show_graph":
-            # Графика 1: Данни + регресионна линия
+            # Plot graph 1
             plt.figure(figsize=(6, 4))
             plt.scatter(sizes, y, color='blue', label='Данни')
-
             rooms_mean = np.mean(rooms_arr)
             furnished_fixed = 1
-
             sizes_plot = np.linspace(min(sizes), max(sizes), 100)
             sizes_plot_log = np.log(sizes_plot + 1)
             X_plot = np.column_stack((
@@ -98,7 +104,7 @@ def predict():
             buf1.close()
             plt.close()
 
-            # Графика 2: Загуба (MSE)
+            # Plot graph 2
             plt.figure(figsize=(6, 4))
             plt.plot(model.loss_history, color='orange')
             plt.xlabel("Итерация")
@@ -120,3 +126,13 @@ def predict():
         graph_url=graph_url,
         loss_graph_url=loss_graph_url
     )
+
+@ai_bp.route('/history')
+def history():
+    if not current_user.is_authenticated:
+        return render_template('ai/login_required.html')
+
+    # Query PredictionHistory model, not Prediction model
+    predictions = PredictionHistory.query.filter_by(user_id=current_user.id).order_by(PredictionHistory.timestamp.desc()).all()
+
+    return render_template('ai/prediction_history.html', predictions=predictions)
