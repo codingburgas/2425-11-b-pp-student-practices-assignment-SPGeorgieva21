@@ -12,25 +12,31 @@ def register():
     if form.validate_on_submit():
         username = form.username.data
         email = form.email.data
-
         password = form.password.data
         role = form.role.data
 
-        user = User(username=username,email=email, role=role)
+        existing_user = User.query.filter_by(username=username).first()
+        if existing_user:
+            # Redirect to custom error page with message
+            flash('Потребител с това потребителско име вече съществува.', 'danger')
+            return redirect(url_for('main.error'))
+
+        user = User(username=username, email=email, role=role)
         user.set_password(password)
 
         db.session.add(user)
         db.session.commit()
 
-        flash('Registration successful! Please login.', 'success')
+        flash('Успешна регистрация! Моля, влезте в профила си.', 'success')
         return redirect(url_for('auth.login'))
 
+    # If form not valid, still show form (e.g., for CSRF or field errors)
     return render_template('auth/register.html', form=form)
+
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        # Ако вече е логнат, пращаме според ролята
         if current_user.role == 'admin':
             return redirect(url_for('admin.admin_dashboard'))
         else:
@@ -42,14 +48,17 @@ def login():
         if user and user.check_password(form.password.data):
             login_user(user)
             flash("Успешен вход!", "success")
-            # След логин пренасочваме според ролята
             if user.role == 'admin':
                 return redirect(url_for('admin.admin_dashboard'))
             else:
                 return redirect(url_for('ai.predict'))
         else:
+            # On failed login: redirect to error page
             flash("Грешно потребителско име или парола.", "danger")
+            return redirect(url_for('main.error'))
+
     return render_template('auth/login.html', form=form)
+
 
 @auth_bp.route('/logout')
 @login_required

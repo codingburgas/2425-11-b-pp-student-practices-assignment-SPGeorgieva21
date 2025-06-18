@@ -1,9 +1,13 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, redirect, url_for, flash
 from flask_login import login_required, current_user
 from app.models import PredictionHistory  # Changed from Prediction to PredictionHistory
 from app.main.forms import EditProfileForm
+import logging
 
 main_bp = Blueprint('main', __name__)
+
+# Set up logging (optional but helpful for debugging)
+logger = logging.getLogger(__name__)
 
 @main_bp.route('/')
 def index():
@@ -18,9 +22,15 @@ def edit_profile():
 @main_bp.route('/prediction_history')
 @login_required
 def prediction_history():
-    # Query PredictionHistory model instead of Prediction
-    user_predictions = PredictionHistory.query.filter_by(user_id=current_user.id).order_by(PredictionHistory.timestamp.desc()).all()
-    return render_template('main/prediction_history.html', predictions=user_predictions)
+    try:
+        # Query PredictionHistory model instead of Prediction
+        user_predictions = PredictionHistory.query.filter_by(user_id=current_user.id)\
+            .order_by(PredictionHistory.timestamp.desc()).all()
+        return render_template('main/prediction_history.html', predictions=user_predictions)
+    except Exception as e:
+        logger.error(f"Error retrieving prediction history: {e}")
+        flash("An error occurred while loading your prediction history.", "danger")
+        return redirect(url_for('main.error'))
 
 @main_bp.route('/about')
 def about():
@@ -29,3 +39,7 @@ def about():
 @main_bp.route('/contact')
 def contact():
     return render_template('main/contact.html')
+
+@main_bp.route('/errors')
+def error():
+    return render_template('main/errors.html')
