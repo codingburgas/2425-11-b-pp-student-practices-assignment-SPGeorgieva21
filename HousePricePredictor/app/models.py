@@ -2,6 +2,11 @@ from datetime import datetime
 from .extensions import db
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+import pytz
+
+def current_eu_time():
+    tz = pytz.timezone('Europe/Paris')  # choose the EU timezone you want
+    return datetime.now(tz)
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -11,6 +16,7 @@ class User(db.Model, UserMixin):
     role = db.Column(db.String(50), default='user')
     is_public = db.Column(db.Boolean, default=True)
 
+    
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
     
@@ -25,6 +31,7 @@ class User(db.Model, UserMixin):
     predictions = db.relationship('Prediction', backref='user', lazy=True)
 
 class PredictionHistory(db.Model):
+    
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     area = db.Column(db.Float, nullable=False)  # Made required
@@ -32,7 +39,7 @@ class PredictionHistory(db.Model):
     furnished = db.Column(db.Integer, nullable=False)  # Made required (0 or 1)
     city = db.Column(db.String(100), nullable=False)  # Made required
     result = db.Column(db.Float, nullable=False)  # Made required
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    timestamp = db.Column(db.DateTime, default=current_eu_time)
     
     def __repr__(self):
         return f"<PredictionHistory {self.id} - User {self.user_id}>"
